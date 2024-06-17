@@ -18,11 +18,11 @@ namespace utils {
         auto print( ) -> void {
             std::cout << m_name << " took: "
                       << static_cast<float>( std::chrono::duration_cast< std::chrono::microseconds >(
-                              std::chrono::steady_clock::now( ) - m_start ).count( )) / 1000.f << "ms\n";
+                              std::chrono::high_resolution_clock::now( ) - m_start ).count( )) / 1000.f << "ms\n";
         }
 
     private:
-        std::chrono::steady_clock::time_point m_start = std::chrono::steady_clock::now( );
+        std::chrono::high_resolution_clock::time_point m_start = std::chrono::high_resolution_clock::now( );
         std::string m_name{ };
     };
 }

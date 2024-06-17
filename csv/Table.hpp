@@ -51,6 +51,7 @@ namespace csv {
                   m_rows( std::move( rows ) ) { }
 
         static auto parse( const std::string& content, char delimiter ) -> std::shared_ptr< Table > {
+            utils::Timer parse_timer( "parse" );
             auto lines = split_string( content, '\n' );
             auto headings = split_string( lines[ 0 ], delimiter );
             const auto headings_size = headings.size( );
@@ -116,22 +117,34 @@ namespace csv {
         }
 
         auto encode( char delimiter ) -> std::string {
-            std::stringstream ss;
+            utils::Timer encode_timer( "encode" );
+            std::string out;
 
-            ss << m_headings.encode( delimiter, m_longest_input_per_column ) << "\n";
+//            out.resize( 50000 );
 
-            constexpr auto amount_threads = 12;
+            {
+                utils::Timer timer( "headings encode" );
+                out += m_headings.encode( delimiter, m_longest_input_per_column ) + "\n";
+            }
 
-            std::array< std::string, amount_threads > output{ };
+            constexpr auto amount_threads = 4;
 
-            const auto encode_rows = [ & ]( int32_t offset ) -> void {
-                utils::Timer timer( "encode rows" );
-                std::stringstream ss;
-                for ( int i = offset; i < m_rows.size( ); i += amount_threads ) {
-                    ss << m_rows[ i ].encode( delimiter, m_longest_input_per_column ) << "\n";
+            static std::array< std::string, amount_threads > output{ };
+            static const auto rows_size = m_rows.size( );
+            static auto rows = m_rows;
+            static auto longest_input_per_column = m_longest_input_per_column;
+
+            const auto encode_rows = [ delimiter ](
+                    int32_t offset ) -> void {
+//                utils::Timer timer( "encode rows" );
+                std::string s;
+//                s.resize( ( 256 / amount_threads ) * rows_size );
+                for ( int i = offset; i < rows_size; i += amount_threads ) {
+                    if ( i > rows_size ) return;
+                    s += rows[ i ].encode( delimiter, longest_input_per_column ) + "\n";
                 }
 
-                output[ offset ] = ss.str( );
+                output[ offset ] = std::move( s );
             };
 
             std::vector< std::thread > threads;
@@ -140,19 +153,26 @@ namespace csv {
                 threads.emplace_back( encode_rows, i );
             }
 
-            for ( auto& thread: threads ) {
-                thread.join( );
+            {
+                utils::Timer timer( "thread join" );
+                for ( auto& thread: threads ) {
+                    thread.join( );
+                }
             }
 
-            for ( int i = 0; i < amount_threads; ++i ) {
-                ss << output[ i ];
+            {
+                utils::Timer timer( "join output" );
+//                out.resize( output[ 0 ].size( ) * amount_threads );
+                for ( int i = 0; i < amount_threads; ++i ) {
+                    out += output[ i ];
+                }
             }
 
 //            for ( const auto& row: m_rows ) {
 //                ss << row.encode( delimiter, m_longest_input_per_column ) << "\n";
 //            }
 
-            return ss.str( );
+            return out;
         }
 
     private:

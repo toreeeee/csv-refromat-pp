@@ -20,7 +20,7 @@ namespace csv {
 
 
         [[nodiscard]] auto encode( char delimiter, const std::vector< int32_t >& column_sizes ) const -> std::string {
-            std::stringstream ss;
+            std::string ss;
             for ( int i = 0; i < m_columns.size( ); ++i ) {
                 auto col_length = column_sizes[ i ] + 6;
                 auto val_length = static_cast<int32_t>(m_columns[ i ].size( ));
@@ -29,13 +29,13 @@ namespace csv {
                         static_cast<float>(col_length) - ( spaces_before + static_cast<float>(val_length) );
 
                 if ( i != 0 )
-                    ss << delimiter;
+                    ss += delimiter;
 
-                ss << get_spaces( ( int ) spaces_before ) << m_columns[ i ] <<
-                   get_spaces( ( int ) std::ceil( spaces_end ) );
+                ss += get_spaces( ( int ) spaces_before ) + m_columns[ i ] +
+                      get_spaces( ( int ) std::ceil( spaces_end ) );
             }
 
-            return ss.str( );
+            return ss;
         }
 
     private:
