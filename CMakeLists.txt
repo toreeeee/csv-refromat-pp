@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 26)
 add_executable(csv_formatter main.cpp
         csv/Table.hpp
         csv/TableRow.hpp
-        csv/parse.hpp
         utils/fs.hpp
-        utils/timer.hpp)
+        utils/timer.hpp
+        csv/Table.cpp
+        utils/string.hpp
+        csv/TableRow.cpp)
