@@ -1,5 +1,7 @@
 #include "Table.hpp"
 
+#include <thread>
+
 #include "../utils/string.hpp"
 
 namespace csv {

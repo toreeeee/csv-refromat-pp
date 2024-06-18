@@ -4,7 +4,6 @@
 #include <vector>
 #include "TableRow.hpp"
 #include "../utils/timer.hpp"
-#include <thread>
 
 namespace csv {
     class Table {
