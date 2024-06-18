@@ -5,6 +5,11 @@
 #include "utils/io.hpp"
 
 int main( const int argc, char* argv[ ] ) {
+    if ( argc == 1 ) {
+        utils::io::println( "Please provide a file input as argument" );
+        return 1;
+    }
+
     utils::Timer timer( "reformatting" );
     const auto input_file = argv[ argc - 1 ];
 
