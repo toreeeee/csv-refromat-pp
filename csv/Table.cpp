@@ -45,6 +45,7 @@ namespace csv {
 
                 if ( !parsed ) continue;
 
+                // vlt bad practice
                 rows[ i ] = *parsed;
             }
         };
@@ -90,6 +91,7 @@ namespace csv {
                 s += rows[ i ].encode( delimiter, longest_input_per_column ) + "\n";
             }
 
+            // vlt bad practice
             output[ offset ] = std::move( s );
         };
 
