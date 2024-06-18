@@ -2,30 +2,26 @@
 #include <fstream>
 #include "csv/Table.hpp"
 #include "utils/fs.hpp"
+#include "utils/io.hpp"
 
-int main( int argc, char* argv[ ] ) {
+int main( const int argc, char* argv[ ] ) {
+    utils::Timer timer( "reformatting" );
     const auto input_file = argv[ argc - 1 ];
 
     if ( !std::filesystem::exists( input_file ) ) {
-        std::cout << "input file not found\n";
+        utils::io::println( "Input file not found" );
         return 1;
     }
-    auto str = utils::fs::read_all( input_file );
 
-    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now( );
+    const auto str = utils::fs::read_all( input_file );
 
-    auto table = csv::Table::parse( *str, ':' );
-    auto encoded = table->encode( ':' );
-
-    auto time_passed = std::chrono::high_resolution_clock::now( ) - start;
+    const auto table = csv::Table::parse( *str, ':' );
+    const auto encoded = table->encode( ':' );
 
     if ( !utils::fs::write_all( input_file, encoded ).has_value( ) ) {
-        std::cout << "could not write file\n";
+        utils::io::println( "Could not write output to file" );
         return 1;
     }
-    std::cout << static_cast< float >( std::chrono::duration_cast< std::chrono::microseconds >( time_passed ).
-                count( ) ) /
-            1000.f << "ms\n";
 
     return 0;
 }

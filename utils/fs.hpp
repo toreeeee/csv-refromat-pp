@@ -12,7 +12,10 @@ namespace utils::fs {
         CouldNotWriteFile
     };
 
-    auto write_all( std::string_view path, std::string_view content ) -> std::expected< void, FsError > {
+    inline auto write_all(
+        const std::string_view path,
+        const std::string_view content
+    ) -> std::expected< void, FsError > {
         try {
             std::ofstream stream( path );
             stream << content;
@@ -22,7 +25,7 @@ namespace utils::fs {
         }
     }
 
-    auto read_all( std::string_view path ) -> std::expected< std::string, FsError > {
+    inline auto read_all( std::string_view path ) -> std::expected< std::string, FsError > {
         try {
             std::stringstream ss;
             std::ifstream stream( path );

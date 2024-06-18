@@ -7,18 +7,16 @@
 #include <thread>
 
 namespace csv {
-    // TODO: remove split function
-    // Move row parsing into 1 function
-
     class Table {
     public:
         Table( ) = default;
 
-        Table( const std::vector< std::string >& headings, std::vector< TableRow > rows,
-               std::vector< int32_t > longest_items )
-            : m_headings(
-                  ( headings )
-              ),
+        Table(
+            const std::vector< std::string >& headings,
+            std::vector< TableRow > rows,
+            std::vector< int32_t > longest_items
+        )
+            : m_headings( headings ),
               m_longest_input_per_column( std::move( longest_items ) ),
               m_rows( std::move( rows ) ) {
         }
@@ -28,8 +26,12 @@ namespace csv {
         [[nodiscard]] auto encode( char delimiter ) const -> std::string;
 
     private:
-        static auto parse_row( const std::string& line, char delimiter, int32_t headings_size,
-                               std::vector< int32_t >& longest_items ) -> std::optional< TableRow >;
+        static auto parse_row(
+            const std::string& line,
+            char delimiter,
+            int32_t headings_size,
+            std::vector< int32_t >& longest_items
+        ) -> std::optional< TableRow >;
 
     private:
         TableRow m_headings{ };

@@ -4,8 +4,8 @@
 
 namespace utils::string {
     inline auto trim( std::string& str ) -> std::string {
-        str.erase( str.find_last_not_of( ' ' ) + 1 ); //suffixing spaces
-        str.erase( 0, str.find_first_not_of( ' ' ) ); //prefixing spaces
+        str.erase( str.find_last_not_of( ' ' ) + 1 );
+        str.erase( 0, str.find_first_not_of( ' ' ) );
         return str;
     }
 

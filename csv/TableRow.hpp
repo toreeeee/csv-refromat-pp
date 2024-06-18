@@ -11,12 +11,7 @@
 namespace csv {
     class TableRow {
     public:
-        TableRow( ) {
-        }
-
-        TableRow( std::string line ) {
-            //´
-        }
+        TableRow( ) = default;
 
         explicit TableRow( const std::vector< std::string >& columns ) : m_columns( columns ) {
         }

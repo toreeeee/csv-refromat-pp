@@ -10,4 +10,5 @@ add_executable(csv_formatter main.cpp
         utils/timer.hpp
         csv/Table.cpp
         utils/string.hpp
-        csv/TableRow.cpp)
+        csv/TableRow.cpp
+        utils/io.hpp)

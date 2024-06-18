@@ -32,7 +32,7 @@ namespace csv {
 
         const auto add_run_thread = [ & ]( int offset ) -> void {
             for ( int i = offset; i < line_amount; i += amount_threads ) {
-                if ( lines.size( ) <= i ) return;
+                if ( lines.size( ) < i ) return;
 
                 auto parsed = parse_row(
                     lines[ i ],
@@ -73,11 +73,17 @@ namespace csv {
         static auto rows = m_rows;
         static auto longest_input_per_column = m_longest_input_per_column;
 
-        const auto encode_rows = [ delimiter ](
+        const auto part_size = static_cast< int32_t >( rows_size / amount_threads );
+
+        const auto encode_rows = [ delimiter, part_size ](
             const int32_t offset
         ) -> void {
             std::string s;
-            for ( int i = offset; i < rows_size; i += amount_threads ) {
+
+            const auto start = offset * part_size;
+            const auto end = offset == amount_threads - 1 ? static_cast< int32_t >( rows_size ) : start + part_size;
+
+            for ( int i = start; i < end; ++i ) {
                 if ( rows_size < i ) return;
                 s += rows[ i ].encode( delimiter, longest_input_per_column ) + "\n";
             }
